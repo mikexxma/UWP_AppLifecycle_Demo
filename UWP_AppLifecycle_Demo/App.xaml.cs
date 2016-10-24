@@ -32,7 +32,9 @@ namespace UWP_AppLifecycle_Demo
          
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            this.Resuming += OnResuming;
+            //Resuming += OnResuming;
+            //EnteredBackground += OnEnterBackground;
+            //LeavingBackground += OnLeaveBackgroud;
         }
 
         /// <summary>
@@ -43,6 +45,8 @@ namespace UWP_AppLifecycle_Demo
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
+
+
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -55,17 +59,45 @@ namespace UWP_AppLifecycle_Demo
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
+                    Debug.WriteLine("Terminated 系统关闭app 后 rootframe被销毁");
                 }
 
+                if (e.PreviousExecutionState == ApplicationExecutionState.ClosedByUser)
+                {
+                    Debug.WriteLine("ClosedByUser 用户关闭app 后 rootframe被销毁");
+                }
+
+                if (e.PreviousExecutionState == ApplicationExecutionState.NotRunning)
+                {
+                    //保存数据失败的时候
+                    //App 第一次运行
+                    Debug.WriteLine("NotRunning App 第一次跑");
+                }
+
+                if (e.PreviousExecutionState == ApplicationExecutionState.Suspended)
+                {
+                   //后台到前台的时候
+                }
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
+            }
+
+            if (e.PreviousExecutionState == ApplicationExecutionState.Running)//app 先前的状态是运行此时 root frame没有被销毁(用户重新打开app的时候)
+            {
+                //后台到前台的时候
+                Debug.WriteLine("app 先前的状态是运行此时 root frame没有被销毁(用户重新打开app的时候) 而且还不是从任务栏中打开, 是app 在后台用户点击app图标打开");
             }
 
             if (e.PrelaunchActivated == false)
             {
                 if (rootFrame.Content == null)
                 {
+
+                    if (e.PreviousExecutionState == ApplicationExecutionState.Running)
+                    {
+                        Debug.WriteLine("app 先前的状态是运行此时 root frame没有被销毁(用户重新打开app的时候) 但是rootframe content被销毁了 而且还不是从任务栏中打开, 是app 在后台用户点击app图标打开");
+                    }
+
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
